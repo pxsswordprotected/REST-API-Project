@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { deleteUserById, getUsers } from '../db/users'
+import { deleteUserById, getUserById, getUsers } from '../db/users'
 
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
    
@@ -25,6 +25,29 @@ export const deleteUser = async (req: express.Request, res: express.Response) =>
 
         return res.json(deletedUser);
 
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const updateUser = async (req: express.Request, res: express.Response) => {
+    try {
+      const { id } = req.params;
+      const { username }  = req.body;
+
+        if (!username) {
+           return res.sendStatus(400); 
+        }
+
+        const user = await getUserById(id);
+
+        user.username = username;
+        await user.save()
+
+        // sending a response with a status code of 200 and the user object serialized as JSON data. The client receiving this response will be able to parse the JSON and access the user data.
+        return res.status(200).json(user).end(); //
 
     } catch (error) {
         console.log(error);
