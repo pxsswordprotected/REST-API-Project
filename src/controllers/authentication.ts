@@ -3,6 +3,45 @@ import express from 'express';
 import { createUser, getUserByEmail } from '../db/users';
 import { random, authentication } from '../helpers';
 
+export const login = async (req: express.Request, res: express.Response) => {
+    try {
+        const { email, password } = req.body; //extracts the email and password values from the req.body object
+
+        if (!email || !password) {
+            return res.sendStatus(400);
+        }
+
+        // the code retrieves the user's information, including their salt and password, from the database
+        const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
+
+        if (!user) {
+            return res.sendStatus(400);
+        }
+
+        const expectedHash = authentication(user.authentication.salt, password); // an "expected hash" based on the user's salt and the provided password 
+
+        if (user.authentication.password !== expectedHash) {
+            return res.sendStatus(403);
+        }
+
+        const salt = random();
+        
+        //By updating the session token, the code ensures that each time the user logs in, a new session token is generated and associated with their user account. This session token helps identify and authenticate the user during their current session.
+        user.authentication.sessionToken = authentication(salt, user._id.toString());
+
+        await user.save();
+
+        res.cookie('SHANKS-AUTH', user.authentication.sessionToken, { domain: 'localhost'}); // sets a cookie named 'SHANKS-AUTH' with a value of user.authentication.sessionToken
+        //By setting this cookie, the server is storing the session token on the user's browser. This allows the server to recognize the user and maintain their logged-in state during their interaction with the application.
+
+        return res.status(200).json(user).end();
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
 export const register = async (req: express.Request, res: express.Response) => {
     try { 
         //registration process
