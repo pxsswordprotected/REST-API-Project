@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
+import mongoose from 'mongoose';
 
 const app = express();
 
@@ -22,3 +23,9 @@ server.listen(8080, () => {
 });
 
 
+const MONGO_URL= 'mongodb+srv://jamesalford:kZiB9D6hAPYhCG8Q@cluster0.jtoyxsl.mongodb.net/?retryWrites=true&w=majority';
+
+mongoose.Promise = Promise ; //built-in Promise implementation of JavaScript
+mongoose.connect(MONGO_URL); //establishes a connection between Mongoose and the MongoDB database
+
+mongoose.connection.on('error', (error: Error) => console.log(error)); //error message
