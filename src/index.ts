@@ -18,9 +18,9 @@ app.use(compression()); //Compression makes the data smaller, which helps to imp
 app.use(cookieParser()); // helps to parse the cookies sent by the client with each request.
 app.use(bodyParser.json()); // helps to extract and interpret that data so that it can be easily used by the server.
 
-const server = http.createServer(app); //create our server
+const server = http.createServer(app); //create our server, http is built in in Node.js
 
-server.listen(8080, () => {
+server.listen(8080, () => { //listen() method is used to start the server and make it listen for incoming connections
     console.log('Server running on http://localhost:8080'); //starts the server and displays a message in the console to let us know that the server is running and ready to handle incoming requests.
 });
 
