@@ -3,6 +3,8 @@ import { get, merge } from 'lodash';
 
 import { getUserBySessionToken } from '../db/users';
 
+//serves as a central place to export the middleware functions isAuthenticated and isOwner
+
 export const isAuthenticated = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try { 
 
