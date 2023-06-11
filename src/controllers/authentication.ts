@@ -3,12 +3,13 @@ import express from 'express';
 import { createUser, getUserByEmail } from '../db/users';
 import { random, authentication } from '../helpers';
 
+//handles user authentication and registration functionality
 
 export const login = async (req: express.Request, res: express.Response) => {
     try {
         const { email, password } = req.body; //extracts the email and password values from the req.body object
 
-        if (!email || !password) {
+        if (!email || !password) { //if no email or pass
             return res.sendStatus(400);
         }
 
@@ -35,7 +36,7 @@ export const login = async (req: express.Request, res: express.Response) => {
         res.cookie('SHANKS-AUTH', user.authentication.sessionToken, { domain: 'localhost'}); // sets a cookie named 'SHANKS-AUTH' with a value of user.authentication.sessionToken
         //By setting this cookie, the server is storing the session token on the user's browser. This allows the server to recognize the user and maintain their logged-in state during their interaction with the application.
 
-        return res.status(200).json(user).end();
+        return res.status(200).json(user).end(); //sends a JSON response to the client with a status code of 200, indicating that the request was successful
 
     } catch (error) {
         console.log(error);
